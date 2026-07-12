@@ -325,9 +325,15 @@ function lineChart(host,series,opts={}){
       const m=mc(pt.x); if(prev!=null && bx!=null && m!==pm)prev=null;
       d+=(prev==null?"M":"L")+x(pt.x)+" "+y(pt.y)+" ";prev=pt;pm=m;});
     if(opts.area&&series.length===1){
-      ["2005","2018"].forEach(mm=>{const seg=s.data.filter(p=>fin(p.y)&&mc(p.x)===mm);
-        if(seg.length){let ad="M"+x(seg[0].x)+" "+y(lo);seg.forEach(p=>ad+=" L"+x(p.x)+" "+y(p.y));
-          ad+=" L"+x(seg[seg.length-1].x)+" "+y(lo)+" Z";svg.appendChild(mk("path",{d:ad,fill:s.color,opacity:.09}));});});}
+      ["2005","2018"].forEach(mm=>{
+        const seg=s.data.filter(p=>fin(p.y)&&mc(p.x)===mm);
+        if(!seg.length)return;
+        let ad="M"+x(seg[0].x)+" "+y(lo);
+        seg.forEach(p=>{ad+=" L"+x(p.x)+" "+y(p.y);});
+        ad+=" L"+x(seg[seg.length-1].x)+" "+y(lo)+" Z";
+        svg.appendChild(mk("path",{d:ad,fill:s.color,opacity:.09}));
+      });
+    }
     svg.appendChild(mk("path",{d,fill:"none",stroke:s.color,"stroke-width":2.4,"stroke-linejoin":"round","stroke-linecap":"round"}));
     s.data.forEach(pt=>{if(!fin(pt.y))return;
       const c=mk("circle",{cx:x(pt.x),cy:y(pt.y),r:3.1,fill:"#fff",stroke:s.color,"stroke-width":1.8});
